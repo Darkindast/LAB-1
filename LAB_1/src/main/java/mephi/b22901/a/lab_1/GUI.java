@@ -34,7 +34,7 @@ public class GUI extends JFrame {
         // Панель для импорта (все в одной строке)
         JPanel importPanel = new JPanel(new BorderLayout());
         importPanel.add(new JLabel("Файл для импорта: "), BorderLayout.WEST);
-        filePathField = new JTextField();
+        filePathField = new JTextField("D:\\Лаба_1 образцы данных (1).xlsx");
         importPanel.add(filePathField, BorderLayout.CENTER);
         browseButton = new JButton("Обзор...");
         importPanel.add(browseButton, BorderLayout.EAST);
@@ -57,7 +57,7 @@ public class GUI extends JFrame {
         // Панель для экспорта (все в одной строке)
         JPanel exportPanel = new JPanel(new BorderLayout());
         exportPanel.add(new JLabel("Путь для экспорта: "), BorderLayout.WEST);
-        filePathField2 = new JTextField();
+        filePathField2 = new JTextField("D:output.xlsx");
         exportPanel.add(filePathField2, BorderLayout.CENTER);
         inputPanel.add(exportPanel);
 

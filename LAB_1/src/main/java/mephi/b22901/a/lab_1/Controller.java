@@ -40,7 +40,7 @@ public class Controller {
         }
 
         try {
-            dataSample = dataImporter.makeHashMapFromFile(filePath, sheetIndex);
+            dataSample = dataImporter.importer(filePath, sheetIndex);
             Map<String, double[]> dataMap = dataSample.getDataMap();
 
             StringBuilder result = new StringBuilder("Импортированные данные:\n");
@@ -106,7 +106,7 @@ public class Controller {
 
 
         try {
-            Data_Exporter.exportToExcel(stat.getStatistics(), filePath);
+            Data_Exporter.exporter(stat.getStatistics(), filePath);
             view.setResultText("Данные успешно экспортированы в файл: " + filePath);
         } catch (Exception e) {
             view.showError("Ошибка при экспорте: " + e.getMessage());

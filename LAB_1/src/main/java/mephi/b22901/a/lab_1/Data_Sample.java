@@ -4,14 +4,14 @@
  */
 package mephi.b22901.a.lab_1;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class Data_Sample {
     private Map<String, double[]> dataMap;
 
     public Data_Sample() {
-        this.dataMap = new HashMap<>();
+        this.dataMap = new LinkedHashMap<>();
     }
 
     public void setDataMap(Map<String, double[]> dataMap) {

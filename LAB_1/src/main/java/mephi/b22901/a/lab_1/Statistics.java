@@ -4,74 +4,73 @@
  */
 package mephi.b22901.a.lab_1;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+
 public class Statistics {
-    // Поле для хранения статистики
+
     private Map<String, Map<String, Double>> statistics;
 
-    // Конструктор, который принимает Data_Sample и вычисляет статистику
+
     public Statistics(Data_Sample dataSample) {
         this.statistics = calculateStatistics(dataSample);
     }
 
-    // Геттер для поля statistics
+
     public Map<String, Map<String, Double>> getStatistics() {
         return statistics;
     }
 
-    // Сеттер для поля statistics (если нужно)
     public void setStatistics(Map<String, Map<String, Double>> statistics) {
         this.statistics = statistics;
     }
 
-    // Метод для вычисления статистики
+
     public Map<String, Map<String, Double>> calculateStatistics(Data_Sample dataSample) {
         Map<String, Map<String, Double>> statistics = new LinkedHashMap<>();
         try {
             Map<String, double[]> dataMap = dataSample.getDataMap();
 
             for (Map.Entry<String, double[]> entry : dataMap.entrySet()) {
-                String key = entry.getKey();
+                String columnName = entry.getKey();
                 double[] data = entry.getValue();
-                Map<String, Double> stats = new HashMap<>();
+                Map<String, Double> stats = new LinkedHashMap<>();
 
                 if (data.length == 0) {
-                    continue;
+                    continue; 
                 }
 
-                // 1. Среднее геометрическое
-                stats.put("Среднее геометрическое", geometricMean(data));
+           
+                stats.put("Среднее геометрическое", calculateGeometricMean(data));
 
-                // 2. Среднее арифметическое
-                stats.put("Среднее арифметическое", arithmeticMean(data));
+               
+                stats.put("Среднее арифметическое", calculateArithmeticMean(data));
 
-                // 3. Оценка стандартного отклонения
-                stats.put("Стандартное отклонение", standardDeviation(data));
+     
+                stats.put("Стандартное отклонение", calculateStandardDeviation(data));
 
-                // 4. Размах выборки
-                stats.put("Размах", range(data));
+           
+                stats.put("Размах", calculateRange(data));
 
-                // 5. Количество элементов
+               
                 stats.put("Количество элементов", (double) data.length);
 
-                // 6. Коэффициент вариации
-                stats.put("Коэффициент вариации", coefficientOfVariation(data));
+               
+                stats.put("Коэффициент вариации", calculateCoefficientOfVariation(data));
 
-                // 7. Доверительный интервал (95%)
-                stats.put("Доверительный интервал", confidenceInterval(data));
 
-                // 8. Дисперсия
-                stats.put("Дисперсия", variance(data));
+                stats.put("Доверительный интервал", calculateConfidenceInterval(data));
 
-                // 9. Минимум и максимум
-                stats.put("Минимум", Arrays.stream(data).min().orElse(Double.NaN));
-                stats.put("Максимум", Arrays.stream(data).max().orElse(Double.NaN));
+             
+                stats.put("Дисперсия", calculateVariance(data));
 
-                statistics.put(key, stats);
+         
+                stats.put("Минимум", calculateMin(data));
+                stats.put("Максимум", calculateMax(data));
+
+                statistics.put(columnName, stats);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,51 +79,69 @@ public class Statistics {
         return statistics;
     }
 
-    // 1. Среднее геометрическое
-    private static double geometricMean(double[] data) {
+    private static double calculateGeometricMean(double[] data) {
         double product = 1.0;
         for (double num : data) {
-            if (num <= 0) return Double.NaN; // Нельзя считать геометрическое среднее для <= 0
+            if (num <= 0) {
+                return Double.NaN; 
+            }
             product *= num;
         }
         return Math.pow(product, 1.0 / data.length);
     }
 
-    // 2. Среднее арифметическое
-    private static double arithmeticMean(double[] data) {
-        return Arrays.stream(data).average().orElse(Double.NaN);
+
+    private static double calculateArithmeticMean(double[] data) {
+        double sum = Arrays.stream(data).sum();
+        return sum / data.length;
     }
 
-    // 3. Стандартное отклонение
-    private static double standardDeviation(double[] data) {
-        double mean = arithmeticMean(data);
-        return Math.sqrt(Arrays.stream(data).map(x -> Math.pow(x - mean, 2)).sum() / (data.length - 1));
+ 
+    private static double calculateStandardDeviation(double[] data) {
+        double mean = calculateArithmeticMean(data);
+        double sd = Arrays.stream(data)
+                .map(x -> Math.pow(x - mean, 2))
+                .sum();
+        return Math.sqrt(sd / (data.length - 1));
     }
 
-    // 4. Размах выборки
-    private static double range(double[] data) {
-        return Arrays.stream(data).max().orElse(0) - Arrays.stream(data).min().orElse(0);
+ 
+    private static double calculateRange(double[] data) {
+        return calculateMax(data) - calculateMin(data);
     }
 
-    // 5. Коэффициент вариации
-    private static double coefficientOfVariation(double[] data) {
-        double mean = arithmeticMean(data);
-        double stdDev = standardDeviation(data);
-        return stdDev / mean;
+ 
+    private static double calculateCoefficientOfVariation(double[] data) {
+        double mean = calculateArithmeticMean(data);
+        double stdDev = calculateStandardDeviation(data);
+        return (stdDev / mean) * 100; 
     }
 
-    // 6. Доверительный интервал (95%)
-    private static double confidenceInterval(double[] data) {
-        double mean = arithmeticMean(data);
-        double stdDev = standardDeviation(data);
+ 
+    private static double calculateConfidenceInterval(double[] data) {
+        double mean = calculateArithmeticMean(data);
+        double stdDev = calculateStandardDeviation(data);
         double marginOfError = 1.96 * (stdDev / Math.sqrt(data.length));
         return marginOfError;
     }
 
-    // 7. Дисперсия
-    private static double variance(double[] data) {
-        double mean = arithmeticMean(data);
-        return Arrays.stream(data).map(x -> Math.pow(x - mean, 2)).sum() / (data.length - 1);
+
+    private static double calculateVariance(double[] data) {
+        double mean = calculateArithmeticMean(data);
+        double var = Arrays.stream(data)
+                .map(x -> Math.pow(x - mean, 2))
+                .sum();
+        return var / (data.length - 1);
+    }
+
+
+    private static double calculateMin(double[] data) {
+        return Arrays.stream(data).min().orElse(Double.NaN);
+    }
+
+
+    private static double calculateMax(double[] data) {
+        return Arrays.stream(data).max().orElse(Double.NaN);
     }
 }
 

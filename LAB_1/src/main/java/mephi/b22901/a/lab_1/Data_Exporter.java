@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class Data_Exporter {
-    public static void exportToExcel(Map<String, Map<String, Double>> statsData, String filePath) {
+    public static void exporter(Map<String, Map<String, Double>> statsData, String filePath) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Статистика");
 

@@ -4,6 +4,7 @@
  */
 package mephi.b22901.a.lab_1;
 
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
@@ -11,9 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Data_Importer {
-    public static Data_Sample makeHashMapFromFile(String inputFileName, int sheetIndex) {
+    public static Data_Sample importer(String inputFileName, int sheetIndex) {
         Data_Sample dataSample = new Data_Sample();
-        Map<String, double[]> resultMap = new LinkedHashMap<>();
 
         try (FileInputStream fis = new FileInputStream(inputFileName);
             Workbook workbook = new XSSFWorkbook(fis)) {
@@ -35,14 +35,14 @@ public class Data_Importer {
                         selection[i] = Double.NaN; 
                     }
                 }
-                resultMap.put(sheet.getRow(0).getCell(k).toString(), selection);
+                dataSample.getDataMap().put(sheet.getRow(0).getCell(k).toString(), selection);
                 System.out.println(sheet.getRow(0).getCell(k).toString());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        dataSample.setDataMap(resultMap);
+        dataSample.setDataMap(dataSample.getDataMap());
         return dataSample;
     }
 }
