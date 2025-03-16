@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 public class GUI extends JFrame {
     private JTextField filePathField;
     private JTextField sheetIndexField;
-    private JTextField filePathField2;
+    private JTextField exportfilePathField;
     private JButton importButton;
     private JButton exportButton;
     private JButton exitButton;
@@ -57,8 +57,8 @@ public class GUI extends JFrame {
         // Панель для экспорта (все в одной строке)
         JPanel exportPanel = new JPanel(new BorderLayout());
         exportPanel.add(new JLabel("Путь для экспорта: "), BorderLayout.WEST);
-        filePathField2 = new JTextField("D:output.xlsx");
-        exportPanel.add(filePathField2, BorderLayout.CENTER);
+        exportfilePathField = new JTextField("D:\\output.xlsx");
+        exportPanel.add(exportfilePathField, BorderLayout.CENTER);
         inputPanel.add(exportPanel);
 
         // Панель для кнопок (каждая кнопка с новой строки)
@@ -97,7 +97,7 @@ public class GUI extends JFrame {
     }
 
     public String getExportFilePath() {
-        return filePathField2.getText();
+        return exportfilePathField.getText();
     }
 
     public void setResultText(String text) {

@@ -43,32 +43,32 @@ public class Statistics {
                 }
 
            
-                stats.put("Среднее геометрическое", calculateGeometricMean(data));
+                stats.put("Среднее геометрическое", Geometric_Mean(data));
 
                
-                stats.put("Среднее арифметическое", calculateArithmeticMean(data));
+                stats.put("Среднее арифметическое", Arithmetic_Mean(data));
 
      
-                stats.put("Стандартное отклонение", calculateStandardDeviation(data));
+                stats.put("Стандартное отклонение", Standard_Deviation(data));
 
            
-                stats.put("Размах", calculateRange(data));
+                stats.put("Размах", Range(data));
 
                
                 stats.put("Количество элементов", (double) data.length);
 
                
-                stats.put("Коэффициент вариации", calculateCoefficientOfVariation(data));
+                stats.put("Коэффициент вариации", Coefficient_Of_Variation(data));
 
 
-                stats.put("Доверительный интервал", calculateConfidenceInterval(data));
+                stats.put("Доверительный интервал", Confidence_Interval(data));
 
              
                 stats.put("Дисперсия", calculateVariance(data));
 
          
-                stats.put("Минимум", calculateMin(data));
-                stats.put("Максимум", calculateMax(data));
+                stats.put("Минимум", Min(data));
+                stats.put("Максимум", Max(data));
 
                 statistics.put(columnName, stats);
             }
@@ -79,7 +79,7 @@ public class Statistics {
         return statistics;
     }
 
-    private static double calculateGeometricMean(double[] data) {
+    private static double Geometric_Mean(double[] data) {
         double product = 1.0;
         for (double num : data) {
             if (num <= 0) {
@@ -91,14 +91,14 @@ public class Statistics {
     }
 
 
-    private static double calculateArithmeticMean(double[] data) {
+    private static double Arithmetic_Mean(double[] data) {
         double sum = Arrays.stream(data).sum();
         return sum / data.length;
     }
 
  
-    private static double calculateStandardDeviation(double[] data) {
-        double mean = calculateArithmeticMean(data);
+    private static double Standard_Deviation(double[] data) {
+        double mean = Arithmetic_Mean(data);
         double sd = Arrays.stream(data)
                 .map(x -> Math.pow(x - mean, 2))
                 .sum();
@@ -106,41 +106,39 @@ public class Statistics {
     }
 
  
-    private static double calculateRange(double[] data) {
-        return calculateMax(data) - calculateMin(data);
+    private static double Range(double[] data) {
+        return Max(data) - Min(data);
     }
 
  
-    private static double calculateCoefficientOfVariation(double[] data) {
-        double mean = calculateArithmeticMean(data);
-        double stdDev = calculateStandardDeviation(data);
+    private static double Coefficient_Of_Variation(double[] data) {
+        double mean = Arithmetic_Mean(data);
+        double stdDev = Standard_Deviation(data);
         return (stdDev / mean) * 100; 
     }
 
  
-    private static double calculateConfidenceInterval(double[] data) {
-        double mean = calculateArithmeticMean(data);
-        double stdDev = calculateStandardDeviation(data);
+    private static double Confidence_Interval(double[] data) {
+        double mean = Arithmetic_Mean(data);
+        double stdDev = Standard_Deviation(data);
         double marginOfError = 1.96 * (stdDev / Math.sqrt(data.length));
         return marginOfError;
     }
 
 
     private static double calculateVariance(double[] data) {
-        double mean = calculateArithmeticMean(data);
-        double var = Arrays.stream(data)
-                .map(x -> Math.pow(x - mean, 2))
-                .sum();
+        double mean = Arithmetic_Mean(data);
+        double var = Arrays.stream(data).map(x -> Math.pow(x - mean, 2)).sum();
         return var / (data.length - 1);
     }
 
 
-    private static double calculateMin(double[] data) {
+    private static double Min(double[] data) {
         return Arrays.stream(data).min().orElse(Double.NaN);
     }
 
 
-    private static double calculateMax(double[] data) {
+    private static double Max(double[] data) {
         return Arrays.stream(data).max().orElse(Double.NaN);
     }
 }
