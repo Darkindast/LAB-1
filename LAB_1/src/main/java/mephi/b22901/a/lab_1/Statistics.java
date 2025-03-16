@@ -10,7 +10,26 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 public class Statistics {
-    public static Map<String, Map<String, Double>> calculateStatistics(Data_Sample dataSample) {
+    // Поле для хранения статистики
+    private Map<String, Map<String, Double>> statistics;
+
+    // Конструктор, который принимает Data_Sample и вычисляет статистику
+    public Statistics(Data_Sample dataSample) {
+        this.statistics = calculateStatistics(dataSample);
+    }
+
+    // Геттер для поля statistics
+    public Map<String, Map<String, Double>> getStatistics() {
+        return statistics;
+    }
+
+    // Сеттер для поля statistics (если нужно)
+    public void setStatistics(Map<String, Map<String, Double>> statistics) {
+        this.statistics = statistics;
+    }
+
+    // Метод для вычисления статистики
+    public Map<String, Map<String, Double>> calculateStatistics(Data_Sample dataSample) {
         Map<String, Map<String, Double>> statistics = new LinkedHashMap<>();
         try {
             Map<String, double[]> dataMap = dataSample.getDataMap();

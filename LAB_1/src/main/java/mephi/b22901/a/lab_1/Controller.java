@@ -14,7 +14,7 @@ public class Controller {
     private GUI view;
     private Data_Importer dataImporter;
     private Data_Sample dataSample; 
-    private boolean isStatsCalculated = false; // Флаг для проверки статистики
+    private Statistics stat; 
 
     public Controller(GUI view, Data_Importer dataImporter) {
         this.view = view;
@@ -41,7 +41,6 @@ public class Controller {
 
         try {
             dataSample = dataImporter.makeHashMapFromFile(filePath, sheetIndex);
-            isStatsCalculated = false; // Сбрасываем флаг при новом импорте
             Map<String, double[]> dataMap = dataSample.getDataMap();
 
             StringBuilder result = new StringBuilder("Импортированные данные:\n");
@@ -61,10 +60,11 @@ public class Controller {
             return;
         }
 
-        Statistics stat = new Statistics();
-        Map<String, Map<String, Double>> statsData = stat.calculateStatistics(dataSample);
-        isStatsCalculated = true; // Флаг подтверждает, что статистика рассчитана
-
+        
+        stat= new Statistics(dataSample);
+        
+        Map<String, Map<String, Double>> statsData = stat.getStatistics();
+        
         StringBuilder statsResult = new StringBuilder("Статистика данных:\n");
 
         for (Map.Entry<String, Map<String, Double>> entry : statsData.entrySet()) {
@@ -83,7 +83,7 @@ public class Controller {
             return;
         }
 
-        if (!isStatsCalculated) { 
+        if (stat == null || stat.getStatistics().isEmpty()) {
             view.showError("Сначала рассчитайте статистику перед экспортом!");
             return;
         }
@@ -104,11 +104,9 @@ public class Controller {
             }
         }
 
-        Statistics stat = new Statistics();
-        Map<String, Map<String, Double>> statsData = stat.calculateStatistics(dataSample);
 
         try {
-            Data_Exporter.exportToExcel(statsData, filePath);
+            Data_Exporter.exportToExcel(stat.getStatistics(), filePath);
             view.setResultText("Данные успешно экспортированы в файл: " + filePath);
         } catch (Exception e) {
             view.showError("Ошибка при экспорте: " + e.getMessage());
