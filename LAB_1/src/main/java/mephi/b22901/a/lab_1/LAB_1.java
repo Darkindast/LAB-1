@@ -11,7 +11,8 @@ public class LAB_1 {
         SwingUtilities.invokeLater(() -> {
             GUI view = new GUI();
             Data_Importer dataImporter = new Data_Importer();
-            new Controller(view, dataImporter);
+            Data_Exporter dataExporter = new Data_Exporter();
+            new Controller(view, dataImporter,dataExporter);
             view.setVisible(true);
         });
     }

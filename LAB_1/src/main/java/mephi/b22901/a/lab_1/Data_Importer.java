@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class Data_Importer {
     
-    public static Data_Sample importer(String inputFileName, int sheetIndex) {
+    public Data_Sample importer(String inputFileName, int sheetIndex) {
         Data_Sample dataSample = new Data_Sample();
 
         try (FileInputStream fis = new FileInputStream(inputFileName);

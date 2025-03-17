@@ -27,11 +27,11 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Главная панель для ввода
+       
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(6, 1, 5, 5)); // 6 строк, 1 столбец, отступ 5px
 
-        // Панель для импорта (все в одной строке)
+      
         JPanel importPanel = new JPanel(new BorderLayout());
         importPanel.add(new JLabel("Файл для импорта: "), BorderLayout.WEST);
         filePathField = new JTextField("D:\\Лаба_1 образцы данных (1).xlsx");
@@ -47,14 +47,14 @@ public class GUI extends JFrame {
             }
         });
 
-        // Поле выбора листа (отдельная строка)
+        
         JPanel sheetPanel = new JPanel(new BorderLayout());
         sheetPanel.add(new JLabel("Номер листа: "), BorderLayout.WEST);
         sheetIndexField = new JTextField();
         sheetPanel.add(sheetIndexField, BorderLayout.CENTER);
         inputPanel.add(sheetPanel);
 
-        // Панель для экспорта (все в одной строке)
+     
         JPanel exportPanel = new JPanel(new BorderLayout());
         exportPanel.add(new JLabel("Путь для экспорта: "), BorderLayout.WEST);
         exportfilePathField = new JTextField("D:\\output.xlsx");

@@ -13,12 +13,16 @@ import javax.swing.JTextField;
 public class Controller {
     private GUI view;
     private Data_Importer dataImporter;
+    private Data_Exporter dataExporter;
     private Data_Sample dataSample; 
     private Statistics stat; 
 
-    public Controller(GUI view, Data_Importer dataImporter) {
+    public Controller(GUI view, Data_Importer dataImporter, Data_Exporter dataExporter) {
         this.view = view;
         this.dataImporter = dataImporter;
+        this.dataExporter = dataExporter;
+   
+       
         view.addImportListener(e -> importData());
         view.addExportListener(e -> exportData());
         view.addStatsListener(e -> stats());
@@ -40,6 +44,7 @@ public class Controller {
         }
 
         try {
+           
             dataSample = dataImporter.importer(filePath, sheetIndex);
             Map<String, double[]> dataMap = dataSample.getDataMap();
 
@@ -106,7 +111,7 @@ public class Controller {
 
 
         try {
-            Data_Exporter.exporter(stat.getStatistics(), filePath);
+            dataExporter.exporter(stat.getStatistics(), filePath);
             view.setResultText("Данные успешно экспортированы в файл: " + filePath);
         } catch (Exception e) {
             view.showError("Ошибка при экспорте: " + e.getMessage());
