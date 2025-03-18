@@ -8,12 +8,7 @@ import javax.swing.SwingUtilities;
 
 public class LAB_1 {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            GUI view = new GUI();
-            Data_Importer dataImporter = new Data_Importer();
-            Data_Exporter dataExporter = new Data_Exporter();
-            new Controller(view, dataImporter,dataExporter);
-            view.setVisible(true);
-        });
+        Controller cr = new Controller();
+        
     }
 }

@@ -68,7 +68,7 @@ public class Statistics {
                     coefficientOfVariation = Double.NaN;
                 }
 
-                TDistribution tDist = new TDistribution(count - 1);
+                TDistribution tDist = new TDistribution(count-1);
                 double tValue = tDist.inverseCumulativeProbability(0.975);
                 double confidenceInterval = tValue * (standardDeviation / Math.sqrt(count));
 

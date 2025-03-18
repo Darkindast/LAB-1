@@ -17,11 +17,11 @@ public class Controller {
     private Data_Sample dataSample; 
     private Statistics stat; 
 
-    public Controller(GUI view, Data_Importer dataImporter, Data_Exporter dataExporter) {
-        this.view = view;
-        this.dataImporter = dataImporter;
-        this.dataExporter = dataExporter;
-   
+    public Controller() {
+        view = new GUI();
+        dataImporter = new Data_Importer();
+        dataExporter = new Data_Exporter();
+        view.setVisible(true);
        
         view.addImportListener(e -> importData());
         view.addExportListener(e -> exportData());
