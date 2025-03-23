@@ -4,58 +4,46 @@
  */
 package mephi.b22901.a.lab_1;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
-import javax.swing.JTextField;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 
 public class Controller {
-    private GUI view;
-    private Data_Importer dataImporter;
-    private Data_Exporter dataExporter;
+    private GUI view = new GUI();
     private Data_Sample dataSample; 
     private Statistics stat; 
 
     public Controller() {
-        view = new GUI();
-        dataImporter = new Data_Importer();
-        dataExporter = new Data_Exporter();
         view.setVisible(true);
-       
         view.addImportListener(e -> importData());
         view.addExportListener(e -> exportData());
         view.addStatsListener(e -> stats());
         view.addExitListener(e -> System.exit(0));
     }
 
-    public void importData() {
-        String filePath = view.getFilePath();
+     public void importData() {
+        String filePath = view.getImportFilePath();
         int sheetIndex = view.getSheetIndex();
 
-        if (filePath.isEmpty() || sheetIndex < 0) {
-            view.showError("Введите корректный путь и номер листа.");
-            return;
-        }
-
-        if (!(new java.io.File(filePath)).exists()) {
-            view.showError("Файл не найден.");
-            return;
-        }
-
         try {
-           
-            dataSample = dataImporter.importer(filePath, sheetIndex);
+
+            dataSample = Data_Importer.importer(filePath, sheetIndex);
             Map<String, double[]> dataMap = dataSample.getDataMap();
 
+ 
             StringBuilder result = new StringBuilder("Импортированные данные:\n");
-            dataMap.forEach((key, value) -> 
-            result.append(key).append(" = ").append(java.util.Arrays.toString(value)).append("\n")
+            dataMap.forEach((key, value) ->
+                result.append(key).append(" = ").append(java.util.Arrays.toString(value)).append("\n")
             );
 
             view.setResultText(result.toString());
-        } catch (Exception ex) {
-            view.showError("Ошибка при импорте: " + ex.getMessage());
+        } catch (Exception e) {
+            view.showError("Ошибка при импорте: " + e.getMessage());
         }
     }
     
@@ -94,27 +82,14 @@ public class Controller {
         }
 
         String filePath = view.getExportFilePath();
-        if (filePath.isEmpty()) {
-            view.showError("Введите путь для сохранения файла.");
-            return;
-        }
-
-        File file = new File(filePath);
-        File parentDir = file.getParentFile();
-
-        if (parentDir != null && !parentDir.exists()) {
-            if (!parentDir.mkdirs()) {
-                view.showError("Не удалось создать директорию: " + parentDir.getAbsolutePath());
-                return;
-            }
-        }
-
 
         try {
-            dataExporter.exporter(stat.getStatistics(), filePath);
+
+            Data_Exporter.exporter(stat.getStatistics(), filePath);
             view.setResultText("Данные успешно экспортированы в файл: " + filePath);
         } catch (Exception e) {
             view.showError("Ошибка при экспорте: " + e.getMessage());
         }
     }
+
 }

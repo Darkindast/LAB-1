@@ -6,16 +6,11 @@ package mephi.b22901.a.lab_1;
 
 
 
+import static java.lang.Math.sqrt;
 import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.stat.correlation.Covariance;
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
-import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-import org.apache.commons.math3.stat.descriptive.moment.Variance;
-import org.apache.commons.math3.stat.descriptive.moment.GeometricMean;
-import org.apache.commons.math3.stat.descriptive.rank.Min;
-import org.apache.commons.math3.stat.descriptive.rank.Max;
+import org.apache.commons.math3.stat.StatUtils;
 
-import java.util.Arrays;
+import org.apache.commons.math3.stat.correlation.Covariance;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,20 +40,12 @@ public class Statistics {
                 Map<String, Double> stats = new LinkedHashMap<>();
 
 
-            
-                Mean meanCalculator = new Mean();
-                GeometricMean geometricMeanCalculator = new GeometricMean();
-                StandardDeviation stdDevCalculator = new StandardDeviation();
-                Variance varianceCalculator = new Variance();
-                Min minCalculator = new Min();
-                Max maxCalculator = new Max();
-
-                double arithmeticMean = meanCalculator.evaluate(data);
-                double geometricMean = geometricMeanCalculator.evaluate(data);
-                double standardDeviation = stdDevCalculator.evaluate(data);
-                double variance = varianceCalculator.evaluate(data);
-                double min = minCalculator.evaluate(data);
-                double max = maxCalculator.evaluate(data);
+                double arithmeticMean = StatUtils.mean(data);
+                double geometricMean = StatUtils.geometricMean(data);
+                double variance = StatUtils.variance(data);
+                double standardDeviation = sqrt(StatUtils.variance(data));
+                double min = StatUtils.min(data);
+                double max = StatUtils.max(data);
                 double range = max - min;
                 double count = data.length;
                 double coefficientOfVariation = Double.NaN;

@@ -13,17 +13,43 @@ import java.io.IOException;
 import java.util.Map;
 
 public class Data_Exporter {
-    public void exporter(Map<String, Map<String, Double>> statsData, String filePath) {
+
+    public static void exporter(Map<String, Map<String, Double>> statsData, String filePath) throws IOException {
+       
+        if (statsData == null || statsData.isEmpty()) {
+            throw new IllegalArgumentException("Нет данных для экспорта!");
+        }
+
+       
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IllegalArgumentException("Введите путь для сохранения файла.");
+        }
+
+      
+        if (!filePath.endsWith(".xlsx")) {
+            filePath += ".xlsx";
+        }
+
+       
+        File file = new File(filePath);
+        File parentDir = file.getParentFile();
+
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("Не удалось создать директорию: " + parentDir.getAbsolutePath());
+            }
+        }
+
+      
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Статистика");
 
         int rowIndex = 0;
 
-        
+       
         Row headerRow = sheet.createRow(rowIndex++);
         headerRow.createCell(0).setCellValue("Показатель");
 
-     
         int colIndex = 1;
         for (String sampleName : statsData.keySet()) {
             if (!sampleName.startsWith("Ковариация")) {
@@ -32,7 +58,7 @@ public class Data_Exporter {
             }
         }
 
- 
+       
         for (String pokazName : statsData.values().iterator().next().keySet()) {
             Row row = sheet.createRow(rowIndex++);
             row.createCell(0).setCellValue(pokazName);
@@ -45,23 +71,22 @@ public class Data_Exporter {
                     if (value != null) {
                         cell.setCellValue(value);
                     } else {
-                        cell.setCellValue(0.0); 
+                        cell.setCellValue(0.0); // Заполнение нулём, если значение отсутствует
                     }
                     column++;
                 }
             }
         }
 
-        
+       
         rowIndex++;
         Row exRow = sheet.createRow(rowIndex++);
         exRow.createCell(0).setCellValue("Ковариационная матрица");
 
-     
         for (String covKey : statsData.keySet()) {
-            if (covKey.startsWith("Ковариация")) { 
+            if (covKey.startsWith("Ковариация")) {
                 Row row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(covKey); 
+                row.createCell(0).setCellValue(covKey);
 
                 colIndex = 1;
                 Map<String, Double> covariances = statsData.get(covKey);
@@ -72,7 +97,7 @@ public class Data_Exporter {
                         if (value != null) {
                             cell.setCellValue(value);
                         } else {
-                            cell.setCellValue(0.0); 
+                            cell.setCellValue(Double.NaN); // Заполнение NaN, если значение отсутствует
                         }
                         colIndex++;
                     }
@@ -80,17 +105,16 @@ public class Data_Exporter {
             }
         }
 
-    
+      
         for (int i = 0; i < colIndex; i++) {
             sheet.autoSizeColumn(i);
         }
 
-     
-        try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
+       
+        try (FileOutputStream fileOut = new FileOutputStream(file)) {
             workbook.write(fileOut);
+        } finally {
             workbook.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

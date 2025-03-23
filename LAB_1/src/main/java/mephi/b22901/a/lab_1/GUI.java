@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
-    private JTextField filePathField;
+    private JTextField importfilePathField;
     private JTextField sheetIndexField;
     private JTextField exportfilePathField;
     private JButton importButton;
@@ -18,6 +18,7 @@ public class GUI extends JFrame {
     private JButton exitButton;
     private JButton statsButton;
     private JButton browseButton;
+    private JButton browseButton2;
     private JTextArea resultArea;
 
     public GUI() {
@@ -34,8 +35,9 @@ public class GUI extends JFrame {
       
         JPanel importPanel = new JPanel(new BorderLayout());
         importPanel.add(new JLabel("Файл для импорта: "), BorderLayout.WEST);
-        filePathField = new JTextField("D:\\Лаба_1 образцы данных (1).xlsx");
-        importPanel.add(filePathField, BorderLayout.CENTER);
+        importfilePathField = new JTextField();
+        importfilePathField.setEditable(false);
+        importPanel.add(importfilePathField, BorderLayout.CENTER);
         browseButton = new JButton("Обзор...");
         importPanel.add(browseButton, BorderLayout.EAST);
         inputPanel.add(importPanel);
@@ -43,7 +45,7 @@ public class GUI extends JFrame {
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                filePathField.setText(fileChooser.getSelectedFile().getPath());
+                importfilePathField.setText(fileChooser.getSelectedFile().getPath());
             }
         });
 
@@ -54,14 +56,28 @@ public class GUI extends JFrame {
         sheetPanel.add(sheetIndexField, BorderLayout.CENTER);
         inputPanel.add(sheetPanel);
 
-     
+
         JPanel exportPanel = new JPanel(new BorderLayout());
-        exportPanel.add(new JLabel("Путь для экспорта: "), BorderLayout.WEST);
-        exportfilePathField = new JTextField("D:\\output.xlsx");
+        exportPanel.add(new JLabel("Файл для экспорта: "), BorderLayout.WEST);
+        exportfilePathField = new JTextField();
+        exportfilePathField.setEditable(false);
         exportPanel.add(exportfilePathField, BorderLayout.CENTER);
+        browseButton2 = new JButton("Обзор...");
+        exportPanel.add(browseButton2, BorderLayout.EAST);
         inputPanel.add(exportPanel);
 
-        // Панель для кнопок (каждая кнопка с новой строки)
+        browseButton2.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                String selectedFilePath = fileChooser.getSelectedFile().getPath();
+                if (!selectedFilePath.endsWith(".xlsx")) {
+                    selectedFilePath += ".xlsx"; 
+                }
+        exportfilePathField.setText(selectedFilePath); 
+    }
+});
+
+   
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 5, 5));
         importButton = new JButton("Импорт");
         statsButton = new JButton("Статистика");
@@ -74,31 +90,32 @@ public class GUI extends JFrame {
         buttonPanel.add(exitButton);
         inputPanel.add(buttonPanel);
 
-        // Поле вывода результатов
+     
         resultArea = new JTextArea();
         resultArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultArea);
 
-        // Добавляем компоненты в окно
+       
         add(inputPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    public String getFilePath() {
-        return filePathField.getText();
+    public String getImportFilePath() {
+        return importfilePathField.getText();
     }
 
     public int getSheetIndex() {
         try {
-            return Integer.parseInt(sheetIndexField.getText());
+            return Integer.parseInt(sheetIndexField.getText())-1;
         } catch (NumberFormatException e) {
-            return -1; // Некорректный ввод
+            return -1;
         }
     }
 
     public String getExportFilePath() {
-        return exportfilePathField.getText();
-    }
+        String filePath = exportfilePathField.getText();
+    return filePath;
+}
 
     public void setResultText(String text) {
         resultArea.setText(text);

@@ -4,46 +4,79 @@
  */
 package mephi.b22901.a.lab_1;
 
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Data_Importer {
-    
-    public Data_Sample importer(String inputFileName, int sheetIndex) {
+
+    public static Data_Sample importer(String inputFileName, int sheetIndex) throws IOException {
+       
+        if (inputFileName == null || inputFileName.isEmpty() || sheetIndex < 0) {
+            throw new IllegalArgumentException("Введите корректный путь и номер листа.");
+        }
+
+       
+        File file = new File(inputFileName);
+        if (!file.exists()) {
+            throw new FileNotFoundException("Файл не найден.");
+        }
+
+       
+        if (!inputFileName.toLowerCase().endsWith(".xlsx")) {
+            throw new IllegalArgumentException("Файл должен быть в формате XLSX.");
+        }
+
         Data_Sample dataSample = new Data_Sample();
 
-        try (FileInputStream fis = new FileInputStream(inputFileName);
-            Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(sheetIndex); 
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
 
-            if (sheet.getPhysicalNumberOfRows() == 0) {
-                return dataSample;
+            
+            int numberOfSheets = workbook.getNumberOfSheets();
+            if (sheetIndex >= numberOfSheets) {
+                throw new IllegalArgumentException("Номер листа должен быть от 1 до " + (numberOfSheets));
             }
+
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
             int columnCount = sheet.getRow(0).getPhysicalNumberOfCells();
             int rowCount = sheet.getPhysicalNumberOfRows();
 
+         
             for (int k = 0; k < columnCount; k++) {
                 double[] selection = new double[rowCount - 1];
                 for (int i = 0; i < rowCount - 1; i++) {
-                    try {
-                        selection[i] = sheet.getRow(i + 1).getCell(k).getNumericCellValue();
-                    } catch (Exception e) {
-                        selection[i] = Double.NaN; 
+                    Row row = sheet.getRow(i + 1);
+                    Cell cell = row.getCell(k);
+
+                    if (cell != null) {
+                        switch (cell.getCellType()) {
+                            case FORMULA:
+                                CellValue cellValue = evaluator.evaluate(cell);
+                                if (cellValue.getCellType() == CellType.NUMERIC) {
+                                    selection[i] = cellValue.getNumberValue();
+                                } else {
+                                    selection[i] = Double.NaN;
+                                }
+                                break;
+                            case NUMERIC:
+                                selection[i] = cell.getNumericCellValue();
+                                break;
+                            default:
+                                selection[i] = Double.NaN;
+                                break;
+                        }
+                    } else {
+                        selection[i] = Double.NaN;
                     }
                 }
                 dataSample.getDataMap().put(sheet.getRow(0).getCell(k).toString(), selection);
                 System.out.println(sheet.getRow(0).getCell(k).toString());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        dataSample.setDataMap(dataSample.getDataMap());
         return dataSample;
     }
 }

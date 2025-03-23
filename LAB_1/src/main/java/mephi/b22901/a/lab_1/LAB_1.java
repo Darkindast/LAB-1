@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 public class LAB_1 {
     public static void main(String[] args) {
-        Controller cr = new Controller();
-        
+        Controller controller = new Controller();   
     }
 }
